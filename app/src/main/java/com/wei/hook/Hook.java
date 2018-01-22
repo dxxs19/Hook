@@ -5,6 +5,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.util.Log;
 
+import com.wei.hook.util.ChangeLocationUtil;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -29,95 +31,11 @@ public class Hook implements IXposedHookLoadPackage
     @Override
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         Log.e(TAG, "pkg : " + loadPackageParam.packageName);
-        hookMethod("android.telephony.TelephonyManager", loadPackageParam.classLoader, "getDeviceId", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                super.afterHookedMethod(param);
-                Log.e(TAG, "hook getDeviceId");
-                Object obj = param.getResult();
-                Log.e(TAG, "imei : " + obj);
-                param.setResult("123456789");
-            }
-        });
 
-        hookMethods("android.location.LocationManager", "getLastKnownLocation", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                super.afterHookedMethod(param);
-                Log.e(TAG, "hook getLastKnownLocation");
-                Location location = new Location(LocationManager.PASSIVE_PROVIDER);
-                double lon = 10d;
-                double lat = 20d;
-                location.setLongitude(lon);
-                location.setLatitude(lat);
-                param.setResult(location);
-            }
-        });
-
-        hookMethods("android.location.LocationManager", "requestLocationUpdates", new XC_MethodHook() {
-            @Override
-            protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-//                super.afterHookedMethod(param);
-                Log.e(TAG, "hook requestLocationUpdates" + ", param.args[0] " + param.args[0]);
-                if (param.args.length == 4 && ( param.args[0] instanceof  String))
-                {
-                    LocationListener locationListener = (LocationListener) param.args[3];
-                    Class<?> clazz = LocationListener.class;
-                    Method method = null;
-                    for (Method method1 : clazz.getDeclaredMethods())
-                    {
-                        if (method1.getName().equals("onLocationChanged"))
-                        {
-                            method = method1;
-                            break;
-                        }
-                    }
-                    try {
-                        if (method != null)
-                        {
-                            Object[] args = new Object[1];
-                            Location location = new Location(LocationManager.PASSIVE_PROVIDER);
-                            double lon = System.currentTimeMillis();
-                            double lat = System.currentTimeMillis()/1000;
-                            location.setLongitude(lon);
-                            location.setLatitude(lat);
-                            args[0] = location;
-                            method.invoke(locationListener, args);
-                        }
-                    }catch (Exception e)
-                    {
-                        XposedBridge.log(e);
-                    }
-                }
-            }
-        });
+        // 拦截位置并修改，以欺骗其它定位工具
+        ChangeLocationUtil.getInstance().changeLocation(loadPackageParam);
 
     }
 
-    private void hookMethod (String className, ClassLoader classLoader, String methodName, Object... parameterTypesAndCallback)
-    {
-        try {
-            XposedHelpers.findAndHookMethod(className, classLoader, methodName, parameterTypesAndCallback);
-        }catch (Exception e)
-        {
-            XposedBridge.log(e);
-        }
-    }
 
-    private void hookMethods(String className, String methodName, XC_MethodHook callback)
-    {
-        try {
-            Class<?> clazz = Class.forName(className);
-            for (Method method : clazz.getDeclaredMethods())
-            {
-                if (method.getName().equals(methodName) && !Modifier.isAbstract(method.getModifiers()) && Modifier.isPublic(method.getModifiers()))
-                {
-                    XposedBridge.hookMethod(method, callback);
-                }
-            }
-        } catch (Exception e) {
-            XposedBridge.log(e);
-        }
-
-    }
 }

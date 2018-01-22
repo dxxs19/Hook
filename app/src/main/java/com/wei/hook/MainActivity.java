@@ -43,27 +43,6 @@ public class MainActivity extends BaseActivity {
         {
             showLocation(location);
         }
-        mLocationManager.requestLocationUpdates(LocationManager.PASSIVE_PROVIDER, 3000, 100, new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                showLocation(location);
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        });
 
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         String imei = telephonyManager.getDeviceId();
