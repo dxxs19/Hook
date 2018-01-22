@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wei.hook">
+          package="com.wei.hook">
+
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
 
     <application
         android:allowBackup="true"
@@ -11,11 +15,27 @@
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+
+        <!-- xposedmodule：代表的是Android程序作为Xposed中的一个模块，所以值为true； -->
+        <meta-data
+            android:name="xposedmodule"
+            android:value="true"/>
+
+        <!-- xposeddescription：代表的是对本模块的功能的描述，可以自己简单叙述下就可以了； -->
+        <meta-data
+            android:name="xposeddescription"
+            android:value="hook test"/>
+
+        <!-- xposedminversion：代表的是本模块开发时用到的xposed的jar包的最低版本号，这里是30，而我所用的xposed的jar包版本是54； -->
+        <meta-data
+            android:name="xposedminversion"
+            android:value="30"/>
+
     </application>
 
 </manifest>
