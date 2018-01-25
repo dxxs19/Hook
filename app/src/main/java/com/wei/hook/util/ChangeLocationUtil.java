@@ -98,7 +98,8 @@ public class ChangeLocationUtil extends BaseUtil
                         }
                     }catch (Exception e)
                     {
-                        XposedBridge.log(e);
+//                        XposedBridge.log(e);
+                        Log.e(TAG, e.getMessage());
                     }
                 }
             }

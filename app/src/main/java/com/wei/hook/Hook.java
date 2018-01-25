@@ -6,6 +6,7 @@ import android.location.LocationManager;
 import android.util.Log;
 
 import com.wei.hook.util.ChangeLocationUtil;
+import com.wei.hook.util.HooMyTestAppUtil;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -29,11 +30,19 @@ public class Hook implements IXposedHookLoadPackage
     private final String TAG = getClass().getSimpleName();
 
     @Override
-    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        Log.e(TAG, "pkg : " + loadPackageParam.packageName);
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable
+    {
+        String pkgName = loadPackageParam.packageName;
+        Log.e(TAG, "pkg : " + pkgName);
+        if (!"com.wei.permissionsetting".equals(pkgName))
+        {
+            return;
+        }
 
         // 拦截位置并修改，以欺骗其它定位工具
         ChangeLocationUtil.getInstance().changeLocation(loadPackageParam);
+        HooMyTestAppUtil.getInstance().changeMethods(loadPackageParam);
+
 
     }
 

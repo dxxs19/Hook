@@ -1,5 +1,7 @@
 package com.wei.hook.util;
 
+import android.util.Log;
+
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -22,7 +24,8 @@ public class BaseUtil
             XposedHelpers.findAndHookMethod(className, classLoader, methodName, parameterTypesAndCallback);
         }catch (Exception e)
         {
-            XposedBridge.log(e);
+//            XposedBridge.log(e);
+            Log.e(TAG, e.getMessage());
         }
     }
 
@@ -38,7 +41,8 @@ public class BaseUtil
                 }
             }
         } catch (Exception e) {
-            XposedBridge.log(e);
+//            XposedBridge.log(e);
+            Log.e(TAG, e.getMessage());
         }
 
     }
