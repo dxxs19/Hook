@@ -6,10 +6,13 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -55,6 +58,35 @@ public class MainActivity extends BaseActivity  {
         TelephonyManager telephonyManager = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
         String imei = telephonyManager.getDeviceId();
         mImeiTv.setText("IMEI : " + imei);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        simulationClick(mOpenADBBtn, mOpenADBBtn.getX(), mOpenADBBtn.getY());
+    }
+
+    /**
+     * 模拟点击
+     * @param view
+     * @param x
+     * @param y
+     */
+    private void simulationClick(View view, float x, float y) {
+        Log.e(TAG, x + ", " + y);
+        long downTime = SystemClock.uptimeMillis();
+
+        MotionEvent downEvent = MotionEvent.obtain(downTime, downTime,
+                MotionEvent.ACTION_DOWN, x, y, 0);
+        downTime += 1000;
+
+        MotionEvent upEvent = MotionEvent.obtain(downTime, downTime,
+                MotionEvent.ACTION_UP, x, y, 0);
+
+        view.onTouchEvent(downEvent);
+        view.onTouchEvent(upEvent);
+        downEvent.recycle();
+        upEvent.recycle();
     }
 
     private void showLocation(Location location)
