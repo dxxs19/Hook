@@ -64,6 +64,7 @@ public class MainActivity extends BaseActivity  {
     protected void onResume() {
         super.onResume();
 //        simulationClick(mOpenADBBtn, mOpenADBBtn.getX(), mOpenADBBtn.getY());
+
     }
 
     /**
