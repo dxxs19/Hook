@@ -2,7 +2,9 @@ package com.wei.hook.luckmoney;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -10,6 +12,7 @@ import com.wei.hook.util.BaseUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -30,8 +33,31 @@ public class HookWechat extends BaseUtil {
         return sWechat;
     }
 
-    public void getOpenBtnId(XC_LoadPackage.LoadPackageParam loadPackageParam)
+    public void hookLuckyMoneyInfos(XC_LoadPackage.LoadPackageParam loadPackageParam)
     {
+        hookMethod("com.tencent.wcdb.database.SQLiteDatabase", loadPackageParam.classLoader,
+                "insert", String.class, String.class, ContentValues.class, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        Object[] objects = param.args;
+                        if (objects != null && objects.length > 0)
+                        {
+                            for (Object o:objects) {
+                                Log.e(TAG, o + "");
+                            }
+                        }
+
+                        ContentValues contentValues = (ContentValues) param.args[2];
+                        Set<String> keys = contentValues.keySet();
+                        if (keys != null && keys.size() > 0)
+                        {
+                            for (String key:keys) {
+                                Log.e(TAG, "( key, value ) == " + "( " + key + ", " + contentValues.get(key) + ")" );
+                            }
+                        }
+                    }
+                });
+
         hookMethod("com.tencent.mm.plugin.luckymoney.ui.LuckyMoneyReceiveUI",
                 loadPackageParam.classLoader, "initView", new XC_MethodHook() {
                     @Override
@@ -63,8 +89,9 @@ public class HookWechat extends BaseUtil {
                             field.setAccessible(true);
                             if ( field.getType() == Button.class )
                             {
-                                // 2131758897
+                                // 2131758897(十) == 0x7F100F31(十六)
                                 Button button1 = (Button) field.get(obj);
+                                Log.e(TAG, "目标按钮是否已注册过监听事件？ " + button1.hasOnClickListeners());
                                 Log.e(TAG, "openid1 : " + button1.getId());
                                 button1.performClick();
                             }
@@ -97,5 +124,4 @@ public class HookWechat extends BaseUtil {
             }
         });
     }
-
 }

@@ -43,10 +43,17 @@ public class Hook implements IXposedHookLoadPackage
 //        ChangeLocationUtil.getInstance().changeLocation(loadPackageParam);
 //        HooMyTestAppUtil.getInstance().changeMethods(loadPackageParam);
 
-        if ("com.tencent.mm".equals(pkgName))
+//        String targetPkg = "com.wei.permissionsetting";
+        String targetPkg = "com.tencent.mm";
+
+        if (targetPkg.equals(pkgName))
         {
+            // 拦截自己的测试app
+//            ChangeLocationUtil.getInstance().changeLocation(loadPackageParam);
+//            HooMyTestAppUtil.getInstance().changeMethods(loadPackageParam);
+
             // 拦截微信
-            HookWechat.getInstance().getOpenBtnId(loadPackageParam);
+            HookWechat.getInstance().hookLuckyMoneyInfos(loadPackageParam);
         }
 
     }
