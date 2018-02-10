@@ -22,6 +22,7 @@ public class BaseUtil
     {
         try {
             XposedHelpers.findAndHookMethod(className, classLoader, methodName, parameterTypesAndCallback);
+//            XposedHelpers.call
         }catch (Exception e)
         {
 //            XposedBridge.log(e);

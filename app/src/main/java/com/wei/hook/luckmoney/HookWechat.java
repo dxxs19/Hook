@@ -9,12 +9,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.wei.hook.util.BaseUtil;
+import com.wei.hook.util.FileUtil;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Set;
 
 import de.robv.android.xposed.XC_MethodHook;
+import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
@@ -40,11 +42,13 @@ public class HookWechat extends BaseUtil {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         Object[] objects = param.args;
-                        if (objects != null && objects.length > 0)
+                        int len = objects.length;
+                        for (int i = 0; i < len; i ++)
                         {
-                            for (Object o:objects) {
-                                Log.e(TAG, o + "");
-                            }
+                            Object o = objects[i];
+                            String logObj = "args[" + i + "] : " + o;
+                            Log.e(TAG, logObj);
+                            FileUtil.saveFile(logObj);
                         }
 
                         ContentValues contentValues = (ContentValues) param.args[2];
@@ -52,9 +56,12 @@ public class HookWechat extends BaseUtil {
                         if (keys != null && keys.size() > 0)
                         {
                             for (String key:keys) {
-                                Log.e(TAG, "( key, value ) == " + "( " + key + ", " + contentValues.get(key) + ")" );
+                                String logKeyValue = "( key, value ) == " + "( " + key + ", " + contentValues.get(key) + ")";
+                                Log.e( TAG, logKeyValue );
+                                FileUtil.saveFile(logKeyValue);
                             }
                         }
+                        FileUtil.saveFile("\n ===========================================");
                     }
                 });
 
