@@ -2,6 +2,7 @@ package com.wei.hook;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -18,6 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.wei.hook.controller.AIDLController;
 import com.wei.hook.util.NetworkUtils;
 import com.wei.hook.util.ShellUtil;
 
@@ -37,6 +39,8 @@ public class MainActivity extends BaseActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        // AIDL 调用 。 需要 WanAndroid 先启动，作为服务端
+//        AIDLController.invokeAIDL(this);
     }
 
     @Override
