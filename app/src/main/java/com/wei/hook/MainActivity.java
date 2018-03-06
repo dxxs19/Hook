@@ -41,6 +41,18 @@ public class MainActivity extends BaseActivity  {
         setContentView(R.layout.activity_main);
         // AIDL 调用 。 需要 WanAndroid 先启动，作为服务端
 //        AIDLController.invokeAIDL(this);
+        String code = getAppID();
+        Log.e(TAG, "code : " + code);
+    }
+
+    static {
+        System.loadLibrary("jniTest");
+    }
+
+    private native String getAppID();
+    private void invokedByNative(String msg)
+    {
+        Log.e(TAG, "底层回调信息 ： " + msg);
     }
 
     @Override
