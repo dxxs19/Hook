@@ -42,6 +42,7 @@
             android:name="xposedminversion"
             android:value="30"/>
 
+        <activity android:name="com.wei.wanandroid.activity.ndk.JNIActivity"/>
     </application>
 
 </manifest>

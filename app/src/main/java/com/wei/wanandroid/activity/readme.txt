@@ -1,0 +1,3 @@
+该目录主要是为了测试从wanandroid工程编译出来的so包。
+路径必须和wanandroid的一致。
+测试通过
